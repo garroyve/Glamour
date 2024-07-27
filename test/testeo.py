@@ -2,21 +2,29 @@ from clases.usuarios import Usuarios
 
 
 def main():
-    #Crear una instancia de Usuarios y registrar un usuario
-    #nuevo_usuario = Usuarios(id_user= "", name_user="Nataly", last_name_user="Alzate", email="nat_alzate@hotmail.com", password="23232")
-    #nuevo_usuario.register_user()
+    #------------------------ Creamos usuario ----------------------------#
+    #nuevo_usuario = Usuarios(id_user= "", name_user="Nataly", last_name_user="Alzate", email="nat_alzate@hotmail.com", password="23232") #Crear una instancia de Usuarios y registrar un usuario
+    #nuevo_usuario.register_user() # lo agregamos con el metodo
 
-    # Mostramos usuarios
+    #----------------------- Mostramos usuarios --------------------#
     print("******* Lista de Usuarios *********")
     Usuarios.show_all_users()
+    #---------------------------------------------------------------#
 
-    # Eliminar usuario con referencia user_id
+    #------------------ Eliminar usuario con referencia user_id------------------#
     delete_user = 12
-    eliminar = Usuarios(id_user=delete_user, name_user=None, last_name_user=None, email=None, password=None)
+    eliminar = Usuarios(id_user=delete_user, name_user=None, last_name_user=None, email=None, password=None) # Instancia para eliminar usuario
+    eliminar.delete_user() # Llama al método para eliminar el usuario
+    #----------------------------------------------------------------------------#
 
-    # Llama al método para eliminar el usuario
-    eliminar.delete_user()
+    #----------------- Crear una instancia del usuario con un id existente --------------------#
+    usuario = Usuarios(id_user=15, name_user=None, last_name_user=None, email=None, password=None)# creamos la instancia
+    usuario.update_user('name_user', 'Johnny')# Actualizar el nombre del usuario
+    usuario.update_user('email', 'johnny.doe@hahss.com')# Actualizar el correo electrónico del usuario
+    usuario.update_user('last_name_user', 'arboleda')
+    #--------------------------------------------------------------------------------------------#
 
+    #------------------ Lista actualizada -------------------------------------------------------#
     print("******* Lista de Usuarios actualizada *********")
     Usuarios.show_all_users()
 

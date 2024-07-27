@@ -108,3 +108,42 @@ class Usuarios:
                 conn.close()
                 print("Conexión cerrada")
                 print("todo salio bien")
+
+    def update_user(self, field, value):
+        try:
+            conn = connetion()
+            if conn:
+                cursor = conn.cursor()
+
+                # Diccionario para mapear los nombres de los campos con sus nombres en la base de datos
+                field_map = {
+                    'name_user': 'name_user',
+                    'last_name_user': 'last_name_user',
+                    'email': 'email',
+                    'password': 'password'
+                }
+
+                # Verifica que el campo sea válido
+                if field not in field_map:
+                    print("Campo no válido")
+                    return
+
+                # Construye la consulta SQL
+                sql = f"UPDATE users SET {field_map[field]} = %s WHERE id_user = %s"
+                values = (value, self.__id_user)
+
+                cursor.execute(sql, values)
+                conn.commit()
+
+                if cursor.rowcount > 0:
+                    print("Usuario actualizado exitosamente")
+                else:
+                    print("No se encontró un usuario con el ID proporcionado o no se realizaron cambios")
+
+        except mysql.connector.Error as error:
+            print("Error al actualizar el usuario: ", error)
+        finally:
+            if conn:
+                cursor.close()
+                conn.close()
+                print("Conexión cerrada")
