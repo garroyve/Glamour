@@ -1,7 +1,7 @@
 from databases.conexion import connetion
 import mysql.connector
 
-
+print("Bienvenidos a su clase usuarios ")
 class Usuarios:
 
     def __init__(self, id_user, name_user, last_name_user, email, password):
