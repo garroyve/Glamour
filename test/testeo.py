@@ -1,4 +1,6 @@
 from clases.usuarios import Usuarios
+from clases.employee import Employees
+from clases.servicios import Servicios
 
 
 def main():
@@ -28,6 +30,13 @@ def main():
     print("******* Lista de Usuarios actualizada *********")
     Usuarios.show_all_users()
 
+    #_________________ ingresando aun empleado__________________________
+    print('__________aca estamos ingresando un empleados__________')
+
+    #nicolas = Employees(None, 'nicol', 'mendez', 'colombiana', 23, 'f', 500000)
+    #nicolas.get_into_employee()
+    ni = Employees(2,None,None,None,None,None,None)
+    ni.delete_employee()
 if __name__ == "__main__":
     main()
 
