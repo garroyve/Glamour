@@ -2,7 +2,7 @@ import mysql.connector
 
 def connetion():
     try:
-        conn = mysql.connector.connect(
+        db = mysql.connector.connect(
             host="localhost",
             port="3306",
             user = "root",
@@ -11,14 +11,14 @@ def connetion():
 
 
         )
-        return conn
+        return db
     except mysql.connector.Error as error:
         print("Error de conexion a la base de datos : ", error)
         return None
 
-conn = connetion()
+db = connetion()
 
+''' if db is not None:
+    print("Conexion exitosa") '''
 
-'''if conn is not None:
-    print("Conexion exitosa")'''
 

@@ -2,74 +2,93 @@ from databases.conexion import connetion
 import mysql.connector
 
 class Usuarios:
-
-    def __init__(self, id_user, name_user, last_name_user, email, password):
-        self.__id_user = id_user
-        self.__name_user = name_user
-        self.__last_name_user = last_name_user
-        self.__email = email
-        self.__password = password
+    id_user = None
+    name_user = None
+    last_name_user = None
+    email = None
+    password = None
+    def __init__(self,id_user, name_user, last_name_user, email, password):
+        self._id_user = id_user
+        self._name_user = name_user
+        self._last_name_user = last_name_user
+        self._email = email
+        self._password = password
 
         '''metodo Getter'''
 
-    def get_id_user(self):
-        return self.__id_user
+    @property
+    def id_user(self):
+        return self._id_user
 
-    def get_name_user(self):
-        return self.__name_user
+    @property
+    def name_user(self):
+        return self._name_user
 
-    def get_last_name_user(self):
-        return self.__last_name_user
+    @property
+    def last_name_user(self):
+        return self._last_name_user
 
-    def get_email(self):
-        return self.__email
+    @property
+    def email(self):
+        return self._email
 
-    def get_password(self):
-        return self.__password
+    @property
+    def password(self):
+        return self._password
 
         '''metodo Setter'''
 
-    def set_id_user(self, id_user):
-        self.__id_user = id_user
 
-    def set_name_user(self, name_user):
-        self.__name_user = name_user
+    @id_user.setter
+    def id_user(self, id_user):
+        self._id_user = id_user
 
-    def set_last_name_user(self, last_name_user):
-        self.__last_name_user = last_name_user
+    @name_user.setter
+    def name_user(self, name_user):
+        self._name_user = name_user
 
-    def set_email(self, email):
-        self.__email = email
+    @last_name_user.setter
+    def last_name_user(self, last_name_user):
+        self._last_name_user = last_name_user
 
-    def set_password(self, password):
-        self.__password = password
+    @email.setter
+    def email(self, email):
+        self._email = email
+
+    @password.setter
+    def password(self, password):
+        self._password = password
 
     def register_user(self):
         try:
-            conn = connetion()
-            if conn:
-                cursor = conn.cursor() # cursor para crear consultas
-
-                sql = "INSERT INTO users (name_user, last_name_user, email, password) VALUES (%s, %s, %s, %s)"
-                values = (self.__name_user, self.__last_name_user, self.__email, self.__password)
-                cursor.execute(sql, values)
-                conn.commit()
+            db = connetion()
+            if db:
+                cursor = db.cursor() # cursor para crear consultas
+                #self._id_user = int(input("ID: "))
+                self._name_user = input("Nombre: ")
+                self._last_name_user = input("Apellido: ")
+                self._email = input("Correo: ")
+                self._password = input("Contraseña: ")
+                query = "INSERT INTO users (name_user, last_name_user, email, password) VALUES (%s, %s, %s, %s)"
+                values = (self._name_user, self._last_name_user, self._email, self._password)
+                cursor.execute(query, values)
+                db.commit()
 
                 print("Usuario creado exitosamente")
 
         except mysql.connector.Error as error:
             print("Error al insertar el usuario ", error)
         finally:
-            if conn:
+            if db:
                 cursor.close()
-                conn.close()
+                db.close()
                 print("Conexion cerrada ")
     @staticmethod
     def show_all_users():
         try:
-            conn = connetion()
-            if conn:
-                cursor = conn.cursor()
+            db = connetion()
+            if db:
+                cursor = db.cursor()
 
                 query = "SELECT id_user, name_user, last_name_user, email FROM users"
                 cursor.execute(query)
@@ -82,20 +101,22 @@ class Usuarios:
         except mysql.connector.Error as error:
             print("Error al consultar usuarios: ", error)
         finally:
-            if conn:
-                cursor.close()
-                conn.close()
+            if db:
+                db.close()
+                db.close()
                 print("Conexion cerrada")
 
     def delete_user(self):
+
         try:
-            conn = connetion()
-            if conn:
-                cursor = conn.cursor()
-                sql = "DELETE FROM users WHERE id_user = %s"
-                value = (self.__id_user,)
-                cursor.execute(sql, value)
-                conn.commit()
+            db = connetion()
+            if db:
+                cursor = db.cursor()
+                self._id_user = input("Ingrese el id del usuario que desea eliminar:  ")
+                query = "DELETE FROM users WHERE id_user = %s"
+                value = (self._id_user,)
+                cursor.execute(query, value)
+                db.commit()
                 if cursor.rowcount > 0:
                     print("Usuario eliminado exitosamente")
                 else:
@@ -103,17 +124,34 @@ class Usuarios:
         except mysql.connector.Error as error:
             print("Error al eliminar el usuario: ", error)
         finally:
-            if conn:
+            if db:
                 cursor.close()
-                conn.close()
+                db.close()
                 print("Conexión cerrada")
                 print("todo salio bien")
 
-    def update_user(self, field, value):
+    def update_user(self):
         try:
-            conn = connetion()
-            if conn:
-                cursor = conn.cursor()
+            db = connetion()
+            if db:
+                cursor = db.cursor(dictionary=True)
+
+                self._id_user = input("Introduce el ID del usuario que deseas actualizar: ").strip()
+
+                # Obtiene la información actual del usuario
+                cursor.execute("SELECT * FROM users WHERE id_user = %s", (self._id_user,))
+                user_info = cursor.fetchone()
+
+                if not user_info:
+                    print("No se encontró un usuario con el ID proporcionado.")
+                    return
+
+                print("Información actual del usuario:")
+                for key, value in user_info.items():
+                    print(f"{key}: {value}")
+
+                # Solicita el campo a actualizar
+                field = input("¿Qué campo deseas actualizar? (name_user, last_name_user, email, password): ").strip()
 
                 # Diccionario para mapear los nombres de los campos con sus nombres en la base de datos
                 field_map = {
@@ -128,12 +166,12 @@ class Usuarios:
                     print("Campo no válido")
                     return
 
-                # Construye la consulta SQL
-                sql = f"UPDATE users SET {field_map[field]} = %s WHERE id_user = %s"
-                values = (value, self.__id_user)
+                value = input(f"Introduce el nuevo valor para {field}: ").strip()
 
-                cursor.execute(sql, values)
-                conn.commit()
+                # Construye y ejecuta la consulta SQL
+                query = f"UPDATE users SET {field_map[field]} = %s WHERE id_user = %s"
+                cursor.execute(query, (value, query))
+                db.commit()
 
                 if cursor.rowcount > 0:
                     print("Usuario actualizado exitosamente")
@@ -143,7 +181,7 @@ class Usuarios:
         except mysql.connector.Error as error:
             print("Error al actualizar el usuario: ", error)
         finally:
-            if conn:
+            if db:
                 cursor.close()
-                conn.close()
+                db.close()
                 print("Conexión cerrada")

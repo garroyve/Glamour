@@ -5,8 +5,8 @@ from clases.servicios import Servicios
 
 def main():
     #------------------------ Creamos usuario ----------------------------#
-    #nuevo_usuario = Usuarios(id_user= "", name_user="Nataly", last_name_user="Alzate", email="nat_alzate@hotmail.com", password="23232") #Crear una instancia de Usuarios y registrar un usuario
-    #nuevo_usuario.register_user() # lo agregamos con el metodo
+    nuevo_usuario = Usuarios(id_user= "", name_user="Nataly", last_name_user="Alzate", email="nat_alzate@hotmail.com", password="23232") #Crear una instancia de Usuarios y registrar un usuario
+    nuevo_usuario.register_user() # lo agregamos con el metodo
 
     #----------------------- Mostramos usuarios --------------------#
     print("******* Lista de Usuarios *********")
