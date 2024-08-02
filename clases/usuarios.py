@@ -139,7 +139,7 @@ class Usuarios:
                 self._id_user = input("Introduce el ID del usuario que deseas actualizar: ").strip()
 
                 # Obtiene la información actual del usuario
-                cursor.execute("SELECT * FROM users WHERE id_user = %s", (self._id_user,))
+                cursor.execute("SELECT * FROM users WHERE id_user = %s", (self.id_user,))
                 user_info = cursor.fetchone()
 
                 if not user_info:
@@ -170,7 +170,7 @@ class Usuarios:
 
                 # Construye y ejecuta la consulta SQL
                 query = f"UPDATE users SET {field_map[field]} = %s WHERE id_user = %s"
-                cursor.execute(query, (value, query))
+                cursor.execute(query, (value, self.id_user))
                 db.commit()
 
                 if cursor.rowcount > 0:

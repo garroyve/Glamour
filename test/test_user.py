@@ -15,8 +15,8 @@ from databases.conexion import connetion
 #Usuarios.show_all_users()
 
 ''' MODIFICAR USUARIO '''
-Usuarios.show_all_users()
-modificar = Usuarios(None, None, None, None, None)
-modificar.update_user()
-Usuarios.show_all_users()
+#Usuarios.show_all_users()
+#modificar = Usuarios(None, None, None, None, None)
+#modificar.update_user()
+#Usuarios.show_all_users()
 
