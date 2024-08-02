@@ -20,3 +20,7 @@ from databases.conexion import connetion
 #modificar.update_user()
 #Usuarios.show_all_users()
 
+''' LOGIN '''
+
+logui = Usuarios(None,None,None,None,None)
+logui.login_user()

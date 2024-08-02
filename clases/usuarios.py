@@ -1,5 +1,6 @@
 from databases.conexion import connetion
 import mysql.connector
+import bcrypt
 
 class Usuarios:
     id_user = None
@@ -83,8 +84,8 @@ class Usuarios:
                 cursor.close()
                 db.close()
                 print("Conexion cerrada ")
-    @staticmethod
-    def show_all_users():
+
+    def show_all_users(self):
         try:
             db = connetion()
             if db:
@@ -183,5 +184,51 @@ class Usuarios:
         finally:
             if db:
                 cursor.close()
+                db.close()
+                print("Conexión cerrada")
+
+    def login_user(self):
+        db = None
+        cursor = None
+        try:
+            db = connetion()  #
+
+            self._name_user = input("Ingrese su usuario: ")
+            self._password = input("Ingrese su contraseña: ")
+
+            if db:
+                cursor = db.cursor()
+                query = "SELECT password FROM users WHERE name_user = %s"
+                cursor.execute(query, (self._name_user,))
+                result = cursor.fetchone()
+
+
+                if result is not None:
+                    stored_password = result[0]
+
+                    if self._password == stored_password :
+                        if stored_password =="1111":
+                            opc = int(input("""""
+                            1.mostrar usuarios 
+                            2.modificr usuarios
+                            3.eliminar usuarios
+                            """))
+                            return opc
+                    else:
+                        print("Login exitoso")
+                        return True
+                        print("Contraseña incorrecta")
+                        return False
+                else:
+                    print("Usuario no encontrado")
+                    return False
+
+        except mysql.connector.Error as error:
+            print("Error al encontrar el usuario: ", error)
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if db:
                 db.close()
                 print("Conexión cerrada")
