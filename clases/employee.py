@@ -49,8 +49,7 @@ class Employees:
 
     @age.setter
     def age(self, value):
-        if value <= 18:
-            raise ValueError(" Que sea mayor de 18")
+
         self._age = value
 
     @property
@@ -59,8 +58,7 @@ class Employees:
 
     @sex.setter
     def sex(self, value):
-        if value not in ['M', 'F', 'T']:
-            raise ValueError(" Son:  'M', 'F', or 'T'")
+
         self._sex = value
 
     @property
@@ -69,12 +67,20 @@ class Employees:
 
     @price.setter
     def preci(self, value):
-        if value < 50000:
-            raise ValueError("Que sea mayor a 50.000")
+
         self._price = value
 
+    import mysql.connector
 
-    # ingresar
+
+
+    def get_employee_data(self):
+        self._name_employee = input("Ingrese el nombre del empleado: ")
+        self._last_name_employee = input("Ingrese el apellido del empleado: ")
+        self._nationality = input("Ingrese la nacionalidad del empleado: ")
+        self._age = int(input("Ingrese la edad del empleado: "))
+        self._sex = input("Ingrese el género del empleado: ")
+        self._price = float(input("Ingrese el precio del empleado: "))
     def get_into_employee(self):
         try:
             conn = connetion()
@@ -83,25 +89,26 @@ class Employees:
                 sql = """ INSERT INTO employees (name_employee, last_name_employee, nationality, age, sex, price)
                          VALUES 
                          (%s, %s, %s, %s, %s, %s) """
-                values = (self._name_employee, self._last_name_employee, self._nationality, self._age, self._sex, self._price)
+                self.get_employee_data()
+                values = (
+                self._name_employee, self._last_name_employee, self._nationality, self._age, self._sex, self._price)
                 cursor.execute(sql, values)
                 conn.commit()
-                print("El empleado se ingreso correctamente")
-
+                print("El empleado se ingresó correctamente")
         except mysql.connector.Error as error:
-            print("Erro al guardar el empleado {}".format(error))
+            print(f"Error al guardar el empleado: {error}")
         finally:
             if conn:
                 cursor.close()
                 conn.close()
-                print("conexion cerrada")
-
-    # actualizar
+                print("Conexión cerrada")
     def update_employee(self):
         try:
             conn = connetion()
             if conn:
                 cursor = conn.cursor()
+                self._id_employee = int(input("Ingrese el ID del empleado a actualizar: "))
+                self.get_employee_data()
                 sql = """
                         UPDATE employees
                         SET name_employee = %s,
@@ -109,75 +116,64 @@ class Employees:
                             nationality = %s,
                             age = %s,
                             sex = %s,
-                            prince = %s
+                            price = %s
                         WHERE id_employee = %s
                         """
-                values = (self._id_employee, self._name_employee, self._last_name_employee, self._nationality, self._age, self._sex, self._price)
+                values = (
+                self._name_employee, self._last_name_employee, self._nationality, self._age, self._sex, self._price,
+                self._id_employee)
                 cursor.execute(sql, values)
                 conn.commit()
                 if cursor.rowcount > 0:
-                    print("El empleado se actualizo correctamente")
+                    print("El empleado se actualizó correctamente")
                 else:
-                    print("No se encontro el empleado para actualizar")
-
+                    print("No se encontró el empleado para actualizar")
         except mysql.connector.Error as error:
-            print("Error al actualizar el empleado: {}".format(error))
+            print(f"Error al actualizar el empleado: {error}")
         finally:
             if conn:
                 cursor.close()
                 conn.close()
-                print("Conexion cerrada")
-
-    # mostrar empleado
+                print("Conexión cerrada")
     def show_employee(self):
         try:
-            conn = connetion()
-            if conn:
-                cursor = conn.cursor()
-                sql = "SELECT name_employee, last_name_employe, nationality, age, sex, price FROM employees WHERE id_employe = %s"
-                values = (self._id_employee,)
-                cursor.execute(sql, values)
-                result = cursor.fetchone()
+            db = connetion()
+            if db:
+                cursor = db.cursor()
 
-                if result:
-                    name_employee, last_name_employee, nationality, age, sex, price = result
-                    print(f"Nombre: {name_employee}")
-                    print(f"Apellid: {last_name_employee}")
-                    print(f"Nacionalidad: {nationality}")
-                    print(f"Edad: {age}")
-                    print(f"Genero: {sex}")
-                    print(f"Precio: {price}")
-                else:
-                    print("No se encontro el empleado con el id proporcionado")
-
+                query = "SELECT id_employee, name_employee, last_name_employee, nationality,age,sex,price FROM employees"
+                cursor.execute(query)
+                users = cursor.fetchall()
+                if users:
+                    for user in users:
+                        print(f"ID: {user[0]}, Nombre: {user[1]}, Apellido: {user[2]}, nacionalidad: {user[3]},edad: {user[4]},sexo: {user[5]},precio: {user[6]}")
+                    else:
+                        print("No hay usuarios en la base de datos. ")
         except mysql.connector.Error as error:
-            print("Error al obtener los datos del empleado: {}".format(error))
+            print("Error al consultar usuarios: ", error)
         finally:
-            if conn:
-                cursor.close()
-                conn.close()
-                print("Coexion cerrada")
-
-    # eliminar
+            if db:
+                db.close()
+                db.close()
+                print("Conexion cerrada")
     def delete_employee(self):
         try:
             conn = connetion()
             if conn:
                 cursor = conn.cursor()
+                self._id_employee = int(input("Ingrese el ID del empleado a eliminar: "))
                 sql = "DELETE FROM employees WHERE id_employee = %s"
                 values = (self._id_employee,)
                 cursor.execute(sql, values)
                 conn.commit()
-
                 if cursor.rowcount > 0:
-                    print("EL empleado se elimino correctamente")
+                    print("El empleado se eliminó correctamente")
                 else:
-                    print("No se encontro el empleado para eliminar")
-
+                    print("No se encontró el empleado para eliminar")
         except mysql.connector.Error as error:
-            print("Error al eliminar el empleado: {}".format(error))
+            print(f"Error al eliminar el empleado: {error}")
         finally:
             if conn:
                 cursor.close()
                 conn.close()
-                print("Conexion cerrada")
+                print("Conexión cerrada")
